@@ -23,3 +23,6 @@ TAGS
 # sbt
 /project
 /target
+
+# vim
+*.swp
