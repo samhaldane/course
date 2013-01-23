@@ -12,47 +12,72 @@ class Moonad m where
   -- Relative Difficulty: 3
   -- (use bind and reeturn)
   fmaap' :: (a -> b) -> m a -> m b
-  fmaap' = error "todo"
+  fmaap' f = bind (reeturn . f)
 
 -- Exercise 5
 -- Relative Difficulty: 1
 instance Moonad Id where
-  bind = error "todo"
-  reeturn = error "todo"
+-- bind :: (a -> Id b) -> Id a -> Id b
+  bind f (Id a) = f a
+-- return :: a -> m a
+  reeturn a = Id a 
 
 -- Exercise 6
 -- Relative Difficulty: 2
 instance Moonad List where
-  bind = error "todo"
-  reeturn = error "todo"
+  --bind :: (a -> List b) -> List a -> List b
+  bind = flatMap 
+  --bind = error "todo"
+  --reeturn :: a -> List a
+  reeturn a = (a :| Nil)
 
 -- Exercise 7
 -- Relative Difficulty: 2
 instance Moonad Optional where
-  bind = error "todo"
-  reeturn = error "todo"
+  -- bind :: (a -> Optional b) -> Optional a -> Optional b
+  --bind _ Empty = Empty
+  --bind f (Full a) = f a
+  bind = flip bindOptional
+  -- reeturn :: (a -> Optional a)
+  reeturn a = Full a
 
 -- Exercise 8
 -- Relative Difficulty: 3
 instance Moonad ((->) t) where
-  bind = error "todo"
-  reeturn = error "todo"
+  -- bind :: (a -> ((->) t b) -> ((->) t a) -> ((->) t b)
+  -- bind :: (a -> (t -> b)) -> (t -> a) -> (t -> b)
+  -- bind :: (a -> (t -> b)) -> (t -> a) -> t -> b
+  bind f g t = f (g t) t
+  -- return :: a -> ((->) t a)
+  -- return :: a -> t -> a
+  reeturn a _ = a
 
 -- Exercise 9
 -- Relative Difficulty: 2
 flaatten :: Moonad m => m (m a) -> m a
-flaatten = error "todo"
+flaatten = bind id
 
 -- Exercise 10
 -- Relative Difficulty: 10
 apply :: Moonad m => m (a -> b) -> m a -> m b
-apply = error "todo"
+-- f :: a -> b
+-- XX mf :: m (a -> b)
+-- ma :: m a
+
+-- ? :: m b
+--apply mf ma = bind (\f -> fmaap' f ma) mf 
+apply mf ma = bind (flip fmaap' ma) mf 
 
 -- Exercise 11
 -- Relative Difficulty: 6
 -- (bonus: use apply + fmaap')
 lift2 :: Moonad m => (a -> b -> c) -> m a -> m b -> m c
-lift2 = error "todo"
+-- f :: a -> b -> c
+-- ma :: m a
+-- mb :: m b
+-- ? :: m(b -> c) 
+--lift2 f ma mb = apply (fmaap' f ma) mb
+lift2 f = apply . fmaap' f
 
 -- Exercise 12
 -- Relative Difficulty: 6
