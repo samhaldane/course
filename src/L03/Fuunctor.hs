@@ -39,6 +39,12 @@ instance Fuunctor ((->) t) where
   --fmaap f g = f . g
   fmaap = (.)
 
+-- Exercise 4
+-- Relative Difficulty: 2
+instance Fuunctor IO where
+  fmaap =
+    error "todo"
+
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
